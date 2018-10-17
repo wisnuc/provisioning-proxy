@@ -61,7 +61,7 @@ class Checking extends State {
 
   enter (key) {
     this.req = request
-      .get('localhost:8888/token')
+      .get('https://abel.nodetribe.com/provisioning/token')
       .query({ key })
       .then(res => {
         if (res.status !== 200) {
@@ -102,7 +102,7 @@ class AppService extends EventEmitter {
 
   registByCsr (body, callback) {
     request
-      .post()
+      .post('https://abel.nodetribe.com/provisioning/certificate/sign')
       .send(body)
       .then(res => {
         if (res.status !== 200) return callback(res.error)

@@ -11,6 +11,8 @@ app.use(logger('dev', { skip: (req, res) => res.nolog === true || app.nolog === 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
+app.use('/sign', require('./routes/sign')(appService))
+
 app.use(function(req, res, next) {
   var err = new Error('Not Found')
   err.status = 404
