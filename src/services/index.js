@@ -1,6 +1,6 @@
 const request = require('superagent')
 const EventEmitter = require('events')
-
+const charm = require('charm')
 class State {
   
   constructor (ctx, ...args) {
@@ -21,11 +21,19 @@ class State {
   exit (...args) {
 
   }
+
+  resetWindow () {
+    let c = charm()
+    c.pipe(process.stdout)
+    c.reset()
+    c.end()
+  }
 }
 
 class Pending extends State {
   
   enter() {
+    this.resetWindow()
     console.log('进入等待状态...')
     process.stdout.write('请输入KEY：')
     process.stdin.on('data', chunk => {
@@ -42,7 +50,8 @@ class Pending extends State {
 class Failed extends State {
   
   enter (error) {
-    console.log('进入失败状态:')
+    this.resetWindow()
+    console.log('进入失败状态!')
     console.log(error.message)
     this.error = error
     console.log('请重新输入KEY: ')
@@ -80,7 +89,8 @@ class Checking extends State {
 class Started extends State {
   
   enter (token) {
-    process.stdout
+    this.resetWindow()
+    console.log('****校验通过****')
     console.log('****系统就绪****')
     this.ctx.token = token
   }
@@ -106,7 +116,7 @@ class AppService extends EventEmitter {
       .send(body)
       .then(res => {
         if (res.status !== 200) return callback(res.error)
-        return callback(res.body)
+        return callback(null, res.body)
       }, callback)
   }
 
