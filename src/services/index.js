@@ -69,8 +69,10 @@ class Failed extends State {
 class Checking extends State {
 
   enter (key) {
+    let test = process.env.NODE_ENV === 'test' ? 'test/' : ''
+    console.log(`https://abel.nodetribe.com/${test}provisioning/token`)
     this.req = request
-      .get('https://abel.nodetribe.com/provisioning/token')
+      .get(`https://abel.nodetribe.com/${test}provisioning/token`)
       .query({ key })
       .then(res => {
         if (res.status !== 200) {
@@ -100,7 +102,6 @@ class Started extends State {
   }
 }
 
-
 class AppService extends EventEmitter {
 
   constructor(config) {
@@ -111,8 +112,9 @@ class AppService extends EventEmitter {
   }
 
   registByCsr (body, callback) {
+    let test = process.env.NODE_ENV === 'test' ? 'test/' : ''
     request
-      .post('https://abel.nodetribe.com/provisioning/certificate/sign')
+      .post(`https://abel.nodetribe.com/${test}provisioning/certificate/sign`)
       .send(body)
       .then(res => {
         if (res.status !== 200) return callback(res.error)
